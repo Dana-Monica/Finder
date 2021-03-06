@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Finder</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_register">Register</string>
+    <string name="prompt_email">Enter username</string>
+    <string name="prompt_password">Enter password</string>
+    <string name="action_log_out">Log out</string>
+</resources>
