@@ -15,25 +15,33 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private EditText usernameText, passwordText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        usernameText = (EditText) findViewById(R.id.username);
+        passwordText = (EditText) findViewById(R.id.password);
         mAuth = FirebaseAuth.getInstance();
     }
 
     public void login(View view) {
         if(dataIsCorrect() == true) {
-            mAuth.signInWithEmailAndPassword(findViewById(R.id.username).toString(), findViewById(R.id.password).toString())
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            mAuth.signInWithEmailAndPassword(usernameText.getText().toString(), passwordText.getText().toString())
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                Toast.makeText(LoginActivity.this, "Authentication yyyeeess.",
+                                        Toast.LENGTH_SHORT).show();
                                 //updateUI(user);
                             } else {
                                 Toast.makeText(LoginActivity.this, "Authentication failed.",
@@ -50,24 +58,25 @@ public class LoginActivity extends AppCompatActivity {
 
     public void register(View view) {
         if(dataIsCorrect() == true) {
-            mAuth.createUserWithEmailAndPassword(findViewById(R.id.username).toString(), findViewById(R.id.password).toString())
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            mAuth.createUserWithEmailAndPassword(((EditText)findViewById(R.id.username)).getText().toString(), ((EditText)findViewById(R.id.password)).getText().toString())
+                    .addOnCompleteListener( new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                Toast.makeText(LoginActivity.this, "Register yyesss.",
+                                        Toast.LENGTH_SHORT).show();
                                 //updateUI(user);
                             } else {
-                                Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                Toast.makeText(LoginActivity.this, "Register failed." + ((EditText)findViewById(R.id.username)).getText().toString()+ ((EditText)findViewById(R.id.password)).getText().toString(),
                                         Toast.LENGTH_SHORT).show();
                                 //updateUI(null);
                             }
-
-                            // ...
                         }
                     });
         }
-        Toast.makeText(LoginActivity.this, "Wrong credentials!",
+        else
+            Toast.makeText(LoginActivity.this, "Wrong credentials!",
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -99,4 +108,5 @@ public class LoginActivity extends AppCompatActivity {
             String uid = user.getUid();
         }
     }
+
 }
