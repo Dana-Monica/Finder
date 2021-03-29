@@ -3,6 +3,7 @@ package com.example.finder;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -40,8 +41,8 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                Toast.makeText(LoginActivity.this, "Authentication yyyeeess.",
-                                        Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
                                 //updateUI(user);
                             } else {
                                 Toast.makeText(LoginActivity.this, "Authentication failed.",
@@ -64,8 +65,8 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                Toast.makeText(LoginActivity.this, "Register yyesss.",
-                                        Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
                                 //updateUI(user);
                             } else {
                                 Toast.makeText(LoginActivity.this, "Register failed." + ((EditText)findViewById(R.id.username)).getText().toString()+ ((EditText)findViewById(R.id.password)).getText().toString(),
