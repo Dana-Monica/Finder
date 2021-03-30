@@ -9,20 +9,28 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity {
+public class IngredientsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_ingredients);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
     }
+
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -33,13 +41,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home:
+                Intent intentHome = new Intent(IngredientsActivity.this, MainActivity.class);
+                startActivity(intentHome);
                 return true;
             case R.id.ingredients:
-                Intent intentIngredients = new Intent(MainActivity.this, IngredientsActivity.class);
-                startActivity(intentIngredients);
                 return true;
             case R.id.logout:
-                Intent intentLogOut = new Intent(MainActivity.this, LoginActivity.class);
+                Intent intentLogOut = new Intent(IngredientsActivity.this, LoginActivity.class);
                 startActivity(intentLogOut);
                 return true;
             default:

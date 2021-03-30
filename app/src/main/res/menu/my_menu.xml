@@ -1,12 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:title="Home"
+        android:id="@+id/home"
+        />
+    <item
         android:title="My ingredients"
         android:id="@+id/ingredients"
     />
-    <item
-        android:title="Settings"
-        android:id="@+id/settings"
-        />
     <item
         android:title="Log out"
         android:id="@+id/logout"
