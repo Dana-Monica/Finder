@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,8 +20,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 public class IngredientsActivity extends AppCompatActivity {
+
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private ImageView imageView;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,7 @@ public class IngredientsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ingredients);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+        sp = getSharedPreferences("login", MODE_PRIVATE);
         imageView = findViewById(R.id.photo);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +67,7 @@ public class IngredientsActivity extends AppCompatActivity {
             case R.id.ingredients:
                 return true;
             case R.id.logout:
+                sp.edit().putBoolean("logged",false).apply();
                 Intent intentLogOut = new Intent(IngredientsActivity.this, LoginActivity.class);
                 startActivity(intentLogOut);
                 return true;
