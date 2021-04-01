@@ -19,6 +19,22 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.net.*;
+
 public class IngredientsActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -42,6 +58,17 @@ public class IngredientsActivity extends AppCompatActivity {
         });
     }
 
+    public void searchPicture()
+    {
+        try {
+            // on new thread, not on main thread !
+            new RetrieveTask().execute();
+            Toast.makeText(IngredientsActivity.this, "so far so good", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -49,6 +76,7 @@ public class IngredientsActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             imageView.setImageBitmap(imageBitmap);
+            searchPicture();
         }
     }
 
