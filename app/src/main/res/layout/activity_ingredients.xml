@@ -18,6 +18,34 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
+    <EditText
+        android:id="@+id/ingredientName"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:hint="   Add new ingredient"
+        app:layout_constraintLeft_toLeftOf="@id/my_toolbar"
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
+        />
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ingredientName"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:onClick="adNewIngredient"
+        android:background="@color/colorPrimary"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
+        app:srcCompat="@drawable/ic_add"
+        android:layout_margin="10dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -30,13 +58,5 @@
         app:srcCompat="@drawable/ic_action_camera"
         android:layout_margin="16dp" />
 
-    <ImageView
-        android:id="@+id/photo"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
 
-    </ImageView>
 </androidx.constraintlayout.widget.ConstraintLayout>

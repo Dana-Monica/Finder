@@ -18,19 +18,31 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.AdapterView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,8 +51,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.net.*;
 
@@ -51,15 +65,21 @@ public class IngredientsActivity extends AppCompatActivity {
     private SharedPreferences sp;
     private String filePath = "";
     private File photoFile;
+    private DatabaseReference databaseReference;
+    private List<String> elements;
+    private int numberOfItems = 0;
+    private ListView listView;
+    private ArrayAdapter<String> addressAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        elements = new ArrayList<String>();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredients);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         sp = getSharedPreferences("login", MODE_PRIVATE);
-        imageView = findViewById(R.id.photo);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,13 +87,40 @@ public class IngredientsActivity extends AppCompatActivity {
                 dispatchTakePictureIntent();
             }
         });
+        createNewDBListener();
     }
 
-    public void searchPicture()
+    private void createNewDBListener() {
+        databaseReference.child("Ingredients").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                elements.clear();
+                for (DataSnapshot entrySnaphot : dataSnapshot.getChildren()) {
+                        String item = (String) entrySnaphot.getValue();
+
+                        elements.add(item);
+                        //customAdapter.notifyDataSetChanged();
+                        ((EditText) findViewById(R.id.ingredientName)).setText(item);
+                }
+                numberOfItems = elements.size();
+
+                listView = (ListView) findViewById(R.id.listView);
+                addressAdapter = new ArrayAdapter<String>(IngredientsActivity.this, android.R.layout.simple_spinner_item, elements);
+                addressAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                listView.setAdapter(addressAdapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+
+        });
+    }
+
+    public void searchPicture(File f)
     {
         try {
             // on new thread, not on main thread !
-            new RetrieveTask().execute(photoFile);
+            new RetrieveTask().execute(f);
             Toast.makeText(IngredientsActivity.this, "so far so good", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,11 +131,42 @@ public class IngredientsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            /*Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imageView.setImageBitmap(imageBitmap);*/
-            searchPicture();
+            Bitmap imageBitmap = BitmapFactory.decodeFile(filePath);
+            /*imageBitmap = Bitmap.createScaledBitmap(imageBitmap, 100, 100, false);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
+
+           try {
+                photoFile = new File(Environment.getExternalStorageDirectory()
+                        + File.separator + "Imagename.jpeg");
+                photoFile.createNewFile();
+                FileOutputStream fo = new FileOutputStream(photoFile);
+                fo.write(bytes.toByteArray());
+                fo.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
+            searchPicture(photoFile);
+            //createNewDBListener();
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        createNewDBListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        createNewDBListener();
+    }
+
+    private void addNewIngredient(String ingredient)
+    {
+        databaseReference.child("Ingredients").child(Long.toHexString(System.currentTimeMillis())).setValue(ingredient);
+        createNewDBListener();
     }
 
     private File createImageFile() throws IOException {
@@ -98,7 +176,7 @@ public class IngredientsActivity extends AppCompatActivity {
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
+                ".jpeg",         /* suffix */
                 storageDir      /* directory */
         );
 
@@ -151,5 +229,9 @@ public class IngredientsActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void adNewIngredient(View view) {
+        addNewIngredient(((EditText)findViewById(R.id.ingredientName)).getText().toString());
     }
 }
