@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView;
 
@@ -69,7 +70,7 @@ public class IngredientsActivity extends AppCompatActivity {
     private List<String> elements;
     private int numberOfItems = 0;
     private ListView listView;
-    private ArrayAdapter<String> addressAdapter;
+    private CustomAdapter customAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,14 +101,18 @@ public class IngredientsActivity extends AppCompatActivity {
 
                         elements.add(item);
                         //customAdapter.notifyDataSetChanged();
-                        ((EditText) findViewById(R.id.ingredientName)).setText(item);
                 }
                 numberOfItems = elements.size();
-
                 listView = (ListView) findViewById(R.id.listView);
-                addressAdapter = new ArrayAdapter<String>(IngredientsActivity.this, android.R.layout.simple_spinner_item, elements);
-                addressAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                listView.setAdapter(addressAdapter);
+                customAdapter = new CustomAdapter(IngredientsActivity.this, R.layout.item_ingredient, elements);
+                listView.setAdapter(customAdapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Toast.makeText(IngredientsActivity.this, "Clicked on " + elements.get(i), Toast.LENGTH_SHORT).show();
+                        //startActivity(new Intent(getApplicationContext(), ViewPaymentActivity.class));
+                    }
+                });
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -165,8 +170,10 @@ public class IngredientsActivity extends AppCompatActivity {
 
     private void addNewIngredient(String ingredient)
     {
-        databaseReference.child("Ingredients").child(Long.toHexString(System.currentTimeMillis())).setValue(ingredient);
+        databaseReference.child("Ingredients").child(String.valueOf(elements.size())).setValue(ingredient);
         createNewDBListener();
+        customAdapter.notifyDataSetChanged();
+        ((TextView) findViewById(R.id.ingredientName)).setText("");
     }
 
     private File createImageFile() throws IOException {

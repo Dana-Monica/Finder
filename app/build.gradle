@@ -39,6 +39,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-core:18.0.2'
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "com.android.support:recyclerview-v7"
+    implementation "com.android.support:design"
 }
 
 apply plugin: 'com.google.gms.google-services'
