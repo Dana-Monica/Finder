@@ -18,14 +18,16 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-public class CustomAdapter extends ArrayAdapter<String> {
+public class CustomAdapter extends ArrayAdapter<Item> {
     private Context context;
-    private List<String> ingredients;
+    private List<Item> ingredients;
     private int layoutResID;
     private DatabaseReference databaseReference;
 
-    public CustomAdapter(Context context, int layoutResourceID, List<String> payments) {
-        super(context, layoutResourceID, payments);
+    public CustomAdapter(Context context, int layoutResourceID, List<Item> payments) {
+        super(context,
+                layoutResourceID,
+                payments);
         this.context = context;
         this.ingredients = payments;
         this.layoutResID = layoutResourceID;
@@ -52,14 +54,14 @@ public class CustomAdapter extends ArrayAdapter<String> {
             itemHolder = (ItemHolder) view.getTag();
         }
 
-        final String pItem = ingredients.get(position);
+        final Item pItem = ingredients.get(position);
 
-        itemHolder.nameIngredientItem.setText(pItem);
+        itemHolder.nameIngredientItem.setText(pItem.getItem());
 
         itemHolder.deleteIngredient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                databaseReference.child("Ingredients").child(position + 1 + "").removeValue();
+                databaseReference.child("Ingredients").child(pItem.getKey()).removeValue();
             }
         });
         return view;

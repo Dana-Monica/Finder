@@ -67,14 +67,14 @@ public class IngredientsActivity extends AppCompatActivity {
     private String filePath = "";
     private File photoFile;
     private DatabaseReference databaseReference;
-    private List<String> elements;
+    private List<Item> elements;
     private int numberOfItems = 0;
     private ListView listView;
     private CustomAdapter customAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        elements = new ArrayList<String>();
+        elements = new ArrayList<Item>();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredients);
@@ -97,7 +97,7 @@ public class IngredientsActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 elements.clear();
                 for (DataSnapshot entrySnaphot : dataSnapshot.getChildren()) {
-                        String item = (String) entrySnaphot.getValue();
+                        Item item = new Item((String) entrySnaphot.getValue(),(String) entrySnaphot.getKey());
 
                         elements.add(item);
                         //customAdapter.notifyDataSetChanged();
@@ -170,7 +170,7 @@ public class IngredientsActivity extends AppCompatActivity {
 
     private void addNewIngredient(String ingredient)
     {
-        databaseReference.child("Ingredients").child(String.valueOf(elements.size())).setValue(ingredient);
+        databaseReference.child("Ingredients").child(Long.toHexString(System.currentTimeMillis())).setValue(ingredient);
         createNewDBListener();
         customAdapter.notifyDataSetChanged();
         ((TextView) findViewById(R.id.ingredientName)).setText("");
