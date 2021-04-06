@@ -74,10 +74,10 @@ public class IngredientsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        elements = new ArrayList<Item>();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredients);
+        elements = new ArrayList<Item>();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         sp = getSharedPreferences("login", MODE_PRIVATE);
@@ -88,7 +88,18 @@ public class IngredientsActivity extends AppCompatActivity {
                 dispatchTakePictureIntent();
             }
         });
+        FloatingActionButton search = findViewById(R.id.searchRecipe);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchRecipe();
+            }
+        });
         createNewDBListener();
+    }
+
+    private void searchRecipe() {
+        Toast.makeText(IngredientsActivity.this, "search recipe", Toast.LENGTH_SHORT).show();
     }
 
     private void createNewDBListener() {
@@ -100,24 +111,15 @@ public class IngredientsActivity extends AppCompatActivity {
                         Item item = new Item((String) entrySnaphot.getValue(),(String) entrySnaphot.getKey());
 
                         elements.add(item);
-                        //customAdapter.notifyDataSetChanged();
                 }
                 numberOfItems = elements.size();
                 listView = (ListView) findViewById(R.id.listView);
                 customAdapter = new CustomAdapter(IngredientsActivity.this, R.layout.item_ingredient, elements);
                 listView.setAdapter(customAdapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Toast.makeText(IngredientsActivity.this, "Clicked on " + elements.get(i), Toast.LENGTH_SHORT).show();
-                        //startActivity(new Intent(getApplicationContext(), ViewPaymentActivity.class));
-                    }
-                });
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
-
         });
     }
 
@@ -125,7 +127,7 @@ public class IngredientsActivity extends AppCompatActivity {
     {
         try {
             // on new thread, not on main thread !
-            new RetrieveTask().execute(f);
+            new RetrieveTask().execute(f); // get ingredient from photo
             Toast.makeText(IngredientsActivity.this, "so far so good", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();

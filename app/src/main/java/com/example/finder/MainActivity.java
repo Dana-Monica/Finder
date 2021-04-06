@@ -12,22 +12,72 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sp;
+    private DatabaseReference databaseReference;
+    private List<Recipe> elements;
+    private int numberOfItems = 0;
+    private ListView listView;
+    private CustomAdaptorMain customAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        elements = new ArrayList<Recipe>();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbarMain);
         sp = getSharedPreferences("login", MODE_PRIVATE);
         setSupportActionBar(myToolbar);
+        createNewDBListener();
+    }
+
+    private void createNewDBListener() {
+        databaseReference.child("Recipes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                elements.clear();
+                for (DataSnapshot entrySnaphot : dataSnapshot.getChildren()) {
+                    Recipe item = new Recipe();
+                    item.setName(entrySnaphot.getKey());
+                    for (DataSnapshot ingredientsSnapshot : entrySnaphot.child("Ingredients").getChildren())
+                    {
+                        String name = ingredientsSnapshot.getKey();
+                        String quantity = ingredientsSnapshot.getValue() + "";
+                        item.addIngredient(name,quantity);
+                    }
+                    for (DataSnapshot instructionSnapshot : entrySnaphot.child("Instructions").getChildren())
+                    {
+                        String key = instructionSnapshot.getKey();
+                        String instr = (String) instructionSnapshot.getValue();
+                        item.addInstruction(key, instr);
+                    }
+                    elements.add(item);
+                }
+                numberOfItems = elements.size();
+                listView = (ListView) findViewById(R.id.listViewMain);
+                customAdapter = new CustomAdaptorMain(MainActivity.this, R.layout.item_recipe, elements);
+                listView.setAdapter(customAdapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
