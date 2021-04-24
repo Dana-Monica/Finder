@@ -24,13 +24,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private EditText usernameText, passwordText;
-    private SharedPreferences sp;
+    private SharedPreferences sp,sp2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         sp = getSharedPreferences("login", MODE_PRIVATE);
+        sp2 = getSharedPreferences("username", MODE_PRIVATE);
         if(sp.getBoolean("logged",true) == true)
         {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -50,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 sp.edit().putBoolean("logged",true).apply();
+                                sp2.edit().putString("username", usernameText.getText().toString()).apply();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
                             } else {
@@ -73,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 sp.edit().putBoolean("logged",true).apply();
+                                sp2.edit().putString("username", usernameText.getText().toString()).apply();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
                             } else {
@@ -96,24 +99,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         //updateUI(currentUser);
-    }
-
-    public void getUserData() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // Name, email address, and profile photo Url
-            String name = user.getDisplayName();
-            String email = user.getEmail();
-            Uri photoUrl = user.getPhotoUrl();
-
-            // Check if user's email is verified
-            boolean emailVerified = user.isEmailVerified();
-
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getIdToken() instead.
-            String uid = user.getUid();
-        }
     }
 
 }

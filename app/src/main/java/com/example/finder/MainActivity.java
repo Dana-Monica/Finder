@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,7 +29,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SharedPreferences sp;
+    private SharedPreferences sp, sp2;
     private DatabaseReference databaseReference;
     private List<Recipe> elements;
     private int numberOfItems = 0;
@@ -43,7 +44,14 @@ public class MainActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbarMain);
         sp = getSharedPreferences("login", MODE_PRIVATE);
+        sp2 = getSharedPreferences("username", MODE_PRIVATE);
         setSupportActionBar(myToolbar);
+        //createNewDBListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         createNewDBListener();
     }
 
@@ -53,21 +61,21 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 elements.clear();
                 for (DataSnapshot entrySnaphot : dataSnapshot.getChildren()) {
-                    Recipe item = new Recipe();
-                    item.setName(entrySnaphot.getKey());
-                    for (DataSnapshot ingredientsSnapshot : entrySnaphot.child("Ingredients").getChildren())
-                    {
-                        String name = ingredientsSnapshot.getKey();
-                        String quantity = ingredientsSnapshot.getValue() + "";
-                        item.addIngredient(name,quantity);
+                    if(entrySnaphot.child("user").getValue().toString().equals(sp2.getString("username", ""))) {
+                        Recipe item = new Recipe();
+                        item.setName(entrySnaphot.getKey());
+                        for (DataSnapshot ingredientsSnapshot : entrySnaphot.child("Ingredients").getChildren()) {
+                            String name = ingredientsSnapshot.getKey();
+                            String quantity = ingredientsSnapshot.getValue() + "";
+                            item.addIngredient(name, quantity);
+                        }
+                        for (DataSnapshot instructionSnapshot : entrySnaphot.child("Instructions").getChildren()) {
+                            String key = instructionSnapshot.getKey();
+                            String instr = (String) instructionSnapshot.getValue();
+                            item.addInstruction(key, instr);
+                        }
+                        elements.add(item);
                     }
-                    for (DataSnapshot instructionSnapshot : entrySnaphot.child("Instructions").getChildren())
-                    {
-                        String key = instructionSnapshot.getKey();
-                        String instr = (String) instructionSnapshot.getValue();
-                        item.addInstruction(key, instr);
-                    }
-                    elements.add(item);
                 }
                 numberOfItems = elements.size();
                 listView = (ListView) findViewById(R.id.listViewMain);
@@ -96,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.logout:
                 sp.edit().putBoolean("logged",false).apply();
+                sp2.edit().putString("username", "").apply();
                 Intent intentLogOut = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intentLogOut);
                 return true;

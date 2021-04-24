@@ -2,12 +2,14 @@ package com.example.finder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,14 +25,16 @@ public class CustomAdapter extends ArrayAdapter<Item> {
     private List<Item> ingredients;
     private int layoutResID;
     private DatabaseReference databaseReference;
+    private String username;
 
-    public CustomAdapter(Context context, int layoutResourceID, List<Item> payments) {
+    public CustomAdapter(Context context, int layoutResourceID, List<Item> payments,String username) {
         super(context,
                 layoutResourceID,
                 payments);
         this.context = context;
         this.ingredients = payments;
         this.layoutResID = layoutResourceID;
+        this.username = username;
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -61,7 +65,7 @@ public class CustomAdapter extends ArrayAdapter<Item> {
         itemHolder.deleteIngredient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                databaseReference.child("Ingredients").child(pItem.getKey()).removeValue();
+                databaseReference.child("Ingredients").child(username).child(pItem.getKey()).removeValue();
             }
         });
         return view;

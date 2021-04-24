@@ -63,7 +63,7 @@ public class IngredientsActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private ImageView imageView;
-    private SharedPreferences sp;
+    private SharedPreferences sp, sp2;
     private String filePath = "";
     private File photoFile;
     private DatabaseReference databaseReference;
@@ -81,6 +81,7 @@ public class IngredientsActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         sp = getSharedPreferences("login", MODE_PRIVATE);
+        sp2 = getSharedPreferences("username", MODE_PRIVATE);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,19 +109,28 @@ public class IngredientsActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 elements.clear();
                 for (DataSnapshot entrySnaphot : dataSnapshot.getChildren()) {
-                        Item item = new Item((String) entrySnaphot.getValue(),(String) entrySnaphot.getKey());
-
-                        elements.add(item);
+                        if(entrySnaphot.getKey().toString().equals(getUsername())) {
+                            for(DataSnapshot entrySnaphot2 : entrySnaphot.getChildren()) {
+                                Item item = new Item((String) entrySnaphot2.getValue(), (String) entrySnaphot2.getKey());
+                                elements.add(item);
+                            }
+                        }
                 }
                 numberOfItems = elements.size();
                 listView = (ListView) findViewById(R.id.listView);
-                customAdapter = new CustomAdapter(IngredientsActivity.this, R.layout.item_ingredient, elements);
+                customAdapter = new CustomAdapter(IngredientsActivity.this, R.layout.item_ingredient, elements,getUsername());
                 listView.setAdapter(customAdapter);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    public String getUsername()
+    {
+        String name = sp2.getString("username", "");
+        return name.split("@")[0];
     }
 
     public void searchPicture(File f)
@@ -172,7 +182,7 @@ public class IngredientsActivity extends AppCompatActivity {
 
     private void addNewIngredient(String ingredient)
     {
-        databaseReference.child("Ingredients").child(Long.toHexString(System.currentTimeMillis())).setValue(ingredient);
+        databaseReference.child("Ingredients").child(getUsername()).child(Long.toHexString(System.currentTimeMillis())).setValue(ingredient);
         createNewDBListener();
         customAdapter.notifyDataSetChanged();
         ((TextView) findViewById(R.id.ingredientName)).setText("");
@@ -232,6 +242,7 @@ public class IngredientsActivity extends AppCompatActivity {
                 return true;
             case R.id.logout:
                 sp.edit().putBoolean("logged",false).apply();
+                sp2.edit().putString("username", "").apply();
                 Intent intentLogOut = new Intent(IngredientsActivity.this, LoginActivity.class);
                 startActivity(intentLogOut);
                 return true;
