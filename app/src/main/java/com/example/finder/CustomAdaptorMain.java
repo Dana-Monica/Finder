@@ -2,6 +2,7 @@ package com.example.finder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -46,6 +48,7 @@ public class CustomAdaptorMain extends ArrayAdapter<Recipe> {
             itemHolder.instructions = (TextView) view.findViewById(R.id.recipeInstructions);
             itemHolder.editRecipe = (Button) view.findViewById(R.id.editRecipe);
             itemHolder.seeRecipe = (Button) view.findViewById(R.id.seeRecipe);
+            itemHolder.deleteRecipe = (Button) view.findViewById(R.id.deleteRecipe);
 
             view.setTag(itemHolder);
 
@@ -76,6 +79,12 @@ public class CustomAdaptorMain extends ArrayAdapter<Recipe> {
             }
         });
 
+        itemHolder.deleteRecipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                databaseReference.child("Recipes").child(itemHolder.recipeName.getText().toString()).removeValue();
+            }
+        });
 
         return view;
     }
@@ -86,5 +95,6 @@ public class CustomAdaptorMain extends ArrayAdapter<Recipe> {
         TextView instructions;
         Button editRecipe;
         Button seeRecipe;
+        Button deleteRecipe;
     }
 }

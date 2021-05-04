@@ -71,6 +71,7 @@ public class IngredientsActivity extends AppCompatActivity {
     private int numberOfItems = 0;
     private ListView listView;
     private CustomAdapter customAdapter;
+    private String aux;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +101,12 @@ public class IngredientsActivity extends AppCompatActivity {
     }
 
     private void searchRecipe() {
-        Toast.makeText(IngredientsActivity.this, "search recipe", Toast.LENGTH_SHORT).show();
+        aux = "";
+        for (String a : customAdapter.getSelected())
+            aux +=  "," + a;
+        Intent i=new Intent(this,MainActivity.class);
+        i.putExtra("ingredients", aux);
+        startActivity(i);
     }
 
     private void createNewDBListener() {

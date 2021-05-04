@@ -7,14 +7,15 @@ public class Recipe {
 
     private String name;
     private HashMap<String,String> ingredients;
-    private HashMap<String,String> instructions;
+    private String instructions;
 
     public Recipe(){
-        this.instructions = new HashMap<String,String>();
+        this.instructions = "";
         this.ingredients = new HashMap<String,String>();
+        name= "";
     }
 
-    public Recipe(String name, HashMap<String,String> ingr, HashMap<String,String> instr){
+    public Recipe(String name, HashMap<String,String> ingr, String instr){
         this.name = name;
         this.ingredients = ingr;
         this.instructions = instr;
@@ -24,7 +25,7 @@ public class Recipe {
         return name;
     }
 
-    public HashMap<String,String> getInstructions() {
+    public String getInstructions() {
         return instructions;
     }
 
@@ -40,17 +41,12 @@ public class Recipe {
         ingredients.put(name,quantity);
     }
 
-    public void addInstruction(String key, String instr){
-        instructions.put(key,instr);
+    public void addInstruction(String instr){
+        instructions = instr;
     }
 
     public String getInstructionsString() {
-        String returnString = "";
-        for (String value : instructions.values())
-        {
-            returnString += value + "\n";
-        }
-        return returnString;
+        return instructions;
     }
 
     public String getIngredientsString() {

@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomAdapter extends ArrayAdapter<Item> {
@@ -26,6 +27,7 @@ public class CustomAdapter extends ArrayAdapter<Item> {
     private int layoutResID;
     private DatabaseReference databaseReference;
     private String username;
+    public List<String> selected;
 
     public CustomAdapter(Context context, int layoutResourceID, List<Item> payments,String username) {
         super(context,
@@ -35,6 +37,7 @@ public class CustomAdapter extends ArrayAdapter<Item> {
         this.ingredients = payments;
         this.layoutResID = layoutResourceID;
         this.username = username;
+        selected = new ArrayList<String>();
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -62,6 +65,16 @@ public class CustomAdapter extends ArrayAdapter<Item> {
 
         itemHolder.nameIngredientItem.setText(pItem.getItem());
 
+        itemHolder.checkIngredient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(selected.contains(pItem.getItem()))
+                    selected.remove(pItem.getItem());
+                else
+                    selected.add(pItem.getItem());
+            }
+        });
+
         itemHolder.deleteIngredient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,6 +82,11 @@ public class CustomAdapter extends ArrayAdapter<Item> {
             }
         });
         return view;
+    }
+
+    public List<String> getSelected()
+    {
+        return selected;
     }
 
     private static class ItemHolder {

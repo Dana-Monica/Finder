@@ -7,6 +7,7 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private int numberOfItems = 0;
     private ListView listView;
     private CustomAdaptorMain customAdapter;
+    private String ingredients;
+    private String[] ingredientsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +49,28 @@ public class MainActivity extends AppCompatActivity {
         sp = getSharedPreferences("login", MODE_PRIVATE);
         sp2 = getSharedPreferences("username", MODE_PRIVATE);
         setSupportActionBar(myToolbar);
-        //createNewDBListener();
+        createNewDBListener();
+    }
+
+    private void searchRecipe()
+    {
+        ingredientsList = ingredients.split(",");
+        for (Recipe a : elements) {
+            for(int i=0; i<ingredientsList.length; i++)
+                if(a.getIngredientsString().contains(ingredientsList[i])) {
+                    Log.v("debug-recipe",ingredientsList[i]);
+                }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        createNewDBListener();
+        //createNewDBListener();
+        //Intent intent = getIntent();
+        //ingredients = intent.getStringExtra("ingredients");
+        //if(ingredients.length() > 2)
+        //  searchRecipe();
     }
 
     private void createNewDBListener() {
@@ -61,20 +79,18 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 elements.clear();
                 for (DataSnapshot entrySnaphot : dataSnapshot.getChildren()) {
-                    if(entrySnaphot.child("user").getValue().toString().equals(sp2.getString("username", ""))) {
-                        Recipe item = new Recipe();
-                        item.setName(entrySnaphot.getKey());
-                        for (DataSnapshot ingredientsSnapshot : entrySnaphot.child("Ingredients").getChildren()) {
-                            String name = ingredientsSnapshot.getKey();
-                            String quantity = ingredientsSnapshot.getValue() + "";
-                            item.addIngredient(name, quantity);
+                    if(entrySnaphot.child("user").getValue() != null) {
+                        if (entrySnaphot.child("user").getValue().toString().equals(sp2.getString("username", ""))) {
+                            Recipe item = new Recipe();
+                            item.setName(entrySnaphot.getKey());
+                            for (DataSnapshot ingredientsSnapshot : entrySnaphot.child("Ingredients").getChildren()) {
+                                String name = ingredientsSnapshot.getKey();
+                                String quantity = ingredientsSnapshot.getValue() + "";
+                                item.addIngredient(name, quantity);
+                            }
+                            item.addInstruction(entrySnaphot.child("Instructions").getValue().toString());
+                            elements.add(item);
                         }
-                        for (DataSnapshot instructionSnapshot : entrySnaphot.child("Instructions").getChildren()) {
-                            String key = instructionSnapshot.getKey();
-                            String instr = (String) instructionSnapshot.getValue();
-                            item.addInstruction(key, instr);
-                        }
-                        elements.add(item);
                     }
                 }
                 numberOfItems = elements.size();
@@ -111,5 +127,10 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void addRcipe(View view) {
+        Intent i = new Intent(MainActivity.this, RecipeItem.class);
+        startActivity(i);
     }
 }

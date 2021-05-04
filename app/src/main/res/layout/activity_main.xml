@@ -21,13 +21,26 @@
     <ListView
         android:id="@+id/listViewMain"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/my_toolbarMain"
         android:divider="@android:color/transparent"
         android:dividerHeight="4dp"/>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addRecipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:onClick="addRcipe"
+        android:background="@color/design_default_color_secondary_variant"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/ic_baseline_add_20"
+        android:layout_margin="16dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

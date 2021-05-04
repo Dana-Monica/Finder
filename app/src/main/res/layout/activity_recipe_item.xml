@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RecipeItem">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#30AF8F"
+        android:elevation="4dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:gravity="center"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/recipeNameItem"
+            android:hint="Recipe name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></EditText>
+        <TextView
+            android:text="Ingredients:"
+            android:layout_width="match_parent"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:layout_height="match_parent"></TextView>
+        <TextView
+            android:text="(Ingredient name: quantity)"
+            android:layout_width="match_parent"
+            android:textSize="12dp"
+            android:gravity="center"
+            android:layout_height="match_parent"></TextView>
+        <EditText
+            android:id="@+id/ingredientsRecipeItem"
+            android:layout_width="match_parent"
+            android:hint="Ingredient name: quantity"
+            android:layout_height="wrap_content"></EditText>
+        <TextView
+            android:text="Instructions:"
+            android:layout_width="match_parent"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:layout_height="match_parent"></TextView>
+        <EditText
+            android:id="@+id/instructionsRecipeItem"
+            android:layout_width="match_parent"
+            android:hint="How to make the dish"
+            android:layout_height="wrap_content"></EditText>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/saveRecipeItem"
+                android:background="@drawable/round"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="saveRecipe"
+                android:layout_marginRight="10dp"
+                android:text="Save"></Button>
+            <Button
+                android:id="@+id/cancelRecipeItem"
+                android:background="@drawable/round"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="cancelButton"
+                android:text="Cancel"></Button>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
