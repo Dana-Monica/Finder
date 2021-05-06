@@ -32,6 +32,17 @@ public class RecipeItem extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         sp = getSharedPreferences("login", MODE_PRIVATE);
         sp2 = getSharedPreferences("username", MODE_PRIVATE);
+        Intent a = getIntent();
+        if (a != null)
+        {
+            // e pentru editat, nu adaugat
+            updateFileds();
+        }
+    }
+
+    private void updateFileds()
+    {
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -54,7 +65,8 @@ public class RecipeItem extends AppCompatActivity {
     }
 
     public void saveRecipe(View view) {
-        //save to database and then go to main activity
+        //save  to database and then go to main activity
+        //TODO: VERIFICA SA NU MAI EXISTE ALTU CU ACELASI NUME
         String name = ((EditText) findViewById(R.id.recipeNameItem)).getText().toString();
         String instructions = ((EditText) findViewById(R.id.instructionsRecipeItem)).getText().toString();
         HashMap<String, String> ingredients = parseIngredients();

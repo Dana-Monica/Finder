@@ -2,6 +2,7 @@ package com.example.finder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,7 +66,11 @@ public class CustomAdaptorMain extends ArrayAdapter<Recipe> {
         itemHolder.editRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // ce sa faci daca apasa useru pe edit
+                Intent i = new Intent(context, RecipeItem.class);
+                i.putExtra("nameRecipe", pItem.getName());
+                i.putExtra("instructionsRecipe", pItem.getInstructions());
+                i.putExtra("ingredientsRecipe", pItem.getIngredientsString());
+                context.startActivity(i);
             }
         });
 
