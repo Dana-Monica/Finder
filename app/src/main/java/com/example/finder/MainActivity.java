@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void addRcipe(View view) {
         Intent i = new Intent(MainActivity.this, RecipeItem.class);
+        i.putExtra("Class","New");
         startActivity(i);
     }
 }

@@ -67,6 +67,7 @@ public class CustomAdaptorMain extends ArrayAdapter<Recipe> {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(context, RecipeItem.class);
+                i.putExtra("Class","Edit");
                 i.putExtra("nameRecipe", pItem.getName());
                 i.putExtra("instructionsRecipe", pItem.getInstructions());
                 i.putExtra("ingredientsRecipe", pItem.getIngredientsString());

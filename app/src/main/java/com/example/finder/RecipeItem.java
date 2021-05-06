@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
@@ -22,6 +23,8 @@ public class RecipeItem extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
     private SharedPreferences sp, sp2;
+    private Intent a;
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,22 +35,26 @@ public class RecipeItem extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         sp = getSharedPreferences("login", MODE_PRIVATE);
         sp2 = getSharedPreferences("username", MODE_PRIVATE);
-        Intent a = getIntent();
-        if (a != null)
-        {
-            // e pentru editat, nu adaugat
+        a = getIntent();
+        type = a.getStringExtra("Class");
+        if(type.equals("Edit"))
             updateFileds();
-        }
     }
 
     private void updateFileds()
     {
-
+        String name = a.getStringExtra("nameRecipe");
+        ((EditText) findViewById(R.id.instructionsRecipeItem)).setText(a.getStringExtra("instructionsRecipe"));
+        ((EditText) findViewById(R.id.ingredientsRecipeItem)).setText(a.getStringExtra("ingredientsRecipe"));
+        ((EditText) findViewById(R.id.recipeNameItem)).setText(name);
+        ((EditText) findViewById(R.id.recipeNameItem)).setEnabled(false);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home:
+                Intent i = new Intent(RecipeItem.this, MainActivity.class);
+                startActivity(i);
                 return true;
             case R.id.ingredients:
                 Intent intentIngredients = new Intent(RecipeItem.this, IngredientsActivity.class);
@@ -65,8 +72,6 @@ public class RecipeItem extends AppCompatActivity {
     }
 
     public void saveRecipe(View view) {
-        //save  to database and then go to main activity
-        //TODO: VERIFICA SA NU MAI EXISTE ALTU CU ACELASI NUME
         String name = ((EditText) findViewById(R.id.recipeNameItem)).getText().toString();
         String instructions = ((EditText) findViewById(R.id.instructionsRecipeItem)).getText().toString();
         HashMap<String, String> ingredients = parseIngredients();
