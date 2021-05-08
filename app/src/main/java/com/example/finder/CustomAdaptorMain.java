@@ -89,6 +89,8 @@ public class CustomAdaptorMain extends ArrayAdapter<Recipe> {
             @Override
             public void onClick(View view) {
                 databaseReference.child("Recipes").child(itemHolder.recipeName.getText().toString()).removeValue();
+                SingletonRecipes s = SingletonRecipes.getInstance();
+                s.removeElement(itemHolder.recipeName.getText().toString());
             }
         });
 

@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -102,11 +103,19 @@ public class IngredientsActivity extends AppCompatActivity {
 
     private void searchRecipe() {
         aux = "";
+        int counter = 0;
         for (String a : customAdapter.getSelected())
+        {
             aux +=  "," + a;
-        Intent i=new Intent(this,MainActivity.class);
-        i.putExtra("ingredients", aux);
-        startActivity(i);
+            counter++;
+        }
+        if(counter < 3)
+            Toast.makeText(this, "Please select at least 3 ingredients!", Toast.LENGTH_SHORT).show();
+        else {
+            Intent i = new Intent(this, FilterRecipes.class);
+            i.putExtra("ingredients", aux);
+            startActivity(i);
+        }
     }
 
     private void createNewDBListener() {
@@ -189,7 +198,6 @@ public class IngredientsActivity extends AppCompatActivity {
     private void addNewIngredient(String ingredient)
     {
         databaseReference.child("Ingredients").child(getUsername()).child(Long.toHexString(System.currentTimeMillis())).setValue(ingredient);
-        createNewDBListener();
         customAdapter.notifyDataSetChanged();
         ((TextView) findViewById(R.id.ingredientName)).setText("");
     }

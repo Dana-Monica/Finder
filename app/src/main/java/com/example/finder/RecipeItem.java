@@ -88,6 +88,8 @@ public class RecipeItem extends AppCompatActivity {
                         it.remove();
                     }
                     databaseReference.child("Recipes").child(name).child("user").setValue(user);
+                    SingletonRecipes s = SingletonRecipes.getInstance();
+                    s.addElement(new Recipe(name, ingredients,instructions));
 
                     Intent i = new Intent(RecipeItem.this, MainActivity.class);
                     startActivity(i);

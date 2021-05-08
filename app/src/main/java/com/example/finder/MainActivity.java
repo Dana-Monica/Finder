@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private int numberOfItems = 0;
     private ListView listView;
     private CustomAdaptorMain customAdapter;
-    private String ingredients;
-    private String[] ingredientsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,32 +50,12 @@ public class MainActivity extends AppCompatActivity {
         createNewDBListener();
     }
 
-    private void searchRecipe()
-    {
-        ingredientsList = ingredients.split(",");
-        for (Recipe a : elements) {
-            for(int i=0; i<ingredientsList.length; i++)
-                if(a.getIngredientsString().contains(ingredientsList[i])) {
-                    Log.v("debug-recipe",ingredientsList[i]);
-                }
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //createNewDBListener();
-        //Intent intent = getIntent();
-        //ingredients = intent.getStringExtra("ingredients");
-        //if(ingredients.length() > 2)
-        //  searchRecipe();
-    }
-
     private void createNewDBListener() {
         databaseReference.child("Recipes").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 elements.clear();
+                SingletonRecipes s = SingletonRecipes.getInstance();
                 for (DataSnapshot entrySnaphot : dataSnapshot.getChildren()) {
                     if(entrySnaphot.child("user").getValue() != null) {
                         if (entrySnaphot.child("user").getValue().toString().equals(sp2.getString("username", ""))) {
@@ -89,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
                                 item.addIngredient(name, quantity);
                             }
                             item.addInstruction(entrySnaphot.child("Instructions").getValue().toString());
+                            s.addElement(item);
                             elements.add(item);
                         }
                     }
