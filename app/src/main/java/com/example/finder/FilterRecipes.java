@@ -75,10 +75,10 @@ public class FilterRecipes extends AppCompatActivity {
             }
         }
         listView = (ListView) findViewById(R.id.listViewFilter);
-        customAdapter = new CustomAdaptorMain(FilterRecipes.this, R.layout.item_recipe, elements2);
+        customAdapter = new CustomAdaptorMain(FilterRecipes.this, R.layout.item_recipe_small, elements2);
         listView.setAdapter(customAdapter);
         customAdapter.notifyDataSetChanged();
-        if(elements2.size()<2)
+        if(elements2.size()<1)
             Toast.makeText(this, "No recipes found with these ingredients!", Toast.LENGTH_SHORT).show();
     }
 
