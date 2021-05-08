@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,6 +78,8 @@ public class FilterRecipes extends AppCompatActivity {
         customAdapter = new CustomAdaptorMain(FilterRecipes.this, R.layout.item_recipe, elements2);
         listView.setAdapter(customAdapter);
         customAdapter.notifyDataSetChanged();
+        if(elements2.size()<2)
+            Toast.makeText(this, "No recipes found with these ingredients!", Toast.LENGTH_SHORT).show();
     }
 
     private void getAllRecipes() {

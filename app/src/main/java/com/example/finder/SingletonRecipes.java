@@ -23,7 +23,13 @@ public class SingletonRecipes {
     }
 
     public void addElement(Recipe s) {
-        elements.add(s);
+        Boolean contains = false;
+        for (Recipe a : elements) {
+            if(a.getName().equals(s.getName()))
+                contains = true;
+        }
+        if(contains == false)
+            elements.add(s);
     }
 
     public void removeElement(String s){
