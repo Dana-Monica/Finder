@@ -7,6 +7,9 @@ import android.util.Log;
 
 import com.google.android.gms.common.util.IOUtils;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.net.URL;
 
@@ -40,7 +43,6 @@ public class RetrieveTask extends AsyncTask {
                 final MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
 
                 RequestBody req = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                        //.addFormDataPart("Authorization", "Bearer " + userToken)
                         .addFormDataPart("image",getName(filePath), RequestBody.create(MEDIA_TYPE_JPG, sourceFile)).build();
 
                 Request request = new Request.Builder()
@@ -50,15 +52,18 @@ public class RetrieveTask extends AsyncTask {
                         .build();
 
                 Response response = client.newCall(request).execute();
-                newIngredientDetected = response.body().string();
+                JSONObject obj = new JSONObject(response.body().string());
+                JSONArray a = obj.getJSONArray("recognition_results");
+                JSONObject b = (JSONObject) a.get(0);
+                newIngredientDetected = b.getString("name");
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
 
         }
-        //if(newIngredientDetected.length()>1)
-            //return newIngredientDetected;
+        if(newIngredientDetected.length()>1)
+            return newIngredientDetected;
         return null; // un string cu numele ingredientului detectat
     }
 
@@ -67,4 +72,5 @@ public class RetrieveTask extends AsyncTask {
         String[] split = fielpath.split("/");
         return split[9];
     }
+
 }
