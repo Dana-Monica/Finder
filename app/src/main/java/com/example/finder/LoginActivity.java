@@ -91,7 +91,31 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean dataIsCorrect() {
-        return true;
+        return true;/*
+        if(((EditText)findViewById(R.id.password)).getText().toString().length()<2 && ((EditText)findViewById(R.id.username)).getText().toString().length()<2)
+            return false;
+        if(((EditText)findViewById(R.id.password)).getText().toString().matches("(.*)[0-9](.*)"))
+        {
+            if(((EditText)findViewById(R.id.password)).getText().toString().length() < 6)
+            {
+                Toast.makeText(this, "The password length must be at least 6 characters!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            else
+            {
+                if(((EditText)findViewById(R.id.password)).getText().toString().matches("(.*)[A-Z](.*)"))
+                    return true;
+                else
+                {
+                    Toast.makeText(this, "The password must contain at least one capital letter!", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+        }
+        else {
+            Toast.makeText(this, "The password must contain at least one digit!", Toast.LENGTH_SHORT).show();
+            return false;
+        }*/
     }
 
     @Override

@@ -148,12 +148,12 @@ public class IngredientsActivity extends AppCompatActivity {
         return name.split("@")[0];
     }
 
-    public void searchPicture(File f)
+    public void searchPicture(Bitmap f)
     {
         try {
             // on new thread, not on main thread !
-            new RetrieveTask().execute(f); // get ingredient from photo
-            Toast.makeText(IngredientsActivity.this, "so far so good", Toast.LENGTH_SHORT).show();
+            new RetrieveTask().execute(f,filePath); // get ingredient from photo
+            //add returned ingredient to list
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -164,23 +164,23 @@ public class IngredientsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bitmap imageBitmap = BitmapFactory.decodeFile(filePath);
-            /*imageBitmap = Bitmap.createScaledBitmap(imageBitmap, 100, 100, false);
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
-
-           try {
-                photoFile = new File(Environment.getExternalStorageDirectory()
-                        + File.separator + "Imagename.jpeg");
-                photoFile.createNewFile();
-                FileOutputStream fo = new FileOutputStream(photoFile);
-                fo.write(bytes.toByteArray());
-                fo.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-            searchPicture(photoFile);
-            //createNewDBListener();
+            searchPicture(imageBitmap);
         }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String imageFileName = "image";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        filePath = image.getAbsolutePath();
+        return image;
     }
 
     @Override
@@ -202,34 +202,17 @@ public class IngredientsActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.ingredientName)).setText("");
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpeg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        filePath = image.getAbsolutePath();
-        return image;
-    }
-
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
+
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            photoFile  = null;
+            photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            // Continue only if the File was successfully created
+
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "com.example.finder",
