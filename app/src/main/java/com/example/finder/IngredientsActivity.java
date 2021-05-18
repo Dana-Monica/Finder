@@ -152,8 +152,7 @@ public class IngredientsActivity extends AppCompatActivity {
     {
         try {
             // on new thread, not on main thread !
-            new RetrieveTask().execute(f,filePath); // get ingredient from photo
-            //add returned ingredient to list
+            new RetrieveTask().execute(getUsername(),filePath); // get ingredient from photo
         } catch (Exception e) {
             e.printStackTrace();
         }
