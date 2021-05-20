@@ -91,7 +91,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean dataIsCorrect() {
-        return true;/*
         if(((EditText)findViewById(R.id.password)).getText().toString().length()<2 && ((EditText)findViewById(R.id.username)).getText().toString().length()<2)
             return false;
         if(((EditText)findViewById(R.id.password)).getText().toString().matches("(.*)[0-9](.*)"))
@@ -115,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
         else {
             Toast.makeText(this, "The password must contain at least one digit!", Toast.LENGTH_SHORT).show();
             return false;
-        }*/
+        }
     }
 
     @Override
