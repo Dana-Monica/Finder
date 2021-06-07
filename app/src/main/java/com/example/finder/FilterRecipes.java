@@ -56,21 +56,18 @@ public class FilterRecipes extends AppCompatActivity {
 
     private void searchRecipe()
     {
-        int counter; // sa gasim cel putin 3 ingrediente din cele cautate in reteta
+        int counter;
         ingredientsList = ingredients.split(",");
         List<Recipe> elements2 = new ArrayList<Recipe>();
-        for (Recipe a : elements) { // pentru fiecare reteta
+        for (Recipe a : elements) {
             counter = 0;
             for(int i=1; i<ingredientsList.length; i++) {
-                // fiecare ingredient pe care il avem
                 if (a.getIngredientsString().contains(ingredientsList[i])) {
                     counter++;
                 }
             }
             if ( counter > 2)
             {
-                //am gasit reteta care contine > 2 ingrediente pe care le cautam  & avem
-                //salvam reteta si o afisam
                 elements2.add(a);
             }
         }

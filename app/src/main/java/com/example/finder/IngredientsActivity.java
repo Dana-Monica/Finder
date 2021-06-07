@@ -153,6 +153,7 @@ public class IngredientsActivity extends AppCompatActivity {
         try {
             // on new thread, not on main thread !
             new RetrieveTask().execute(getUsername(),filePath); // get ingredient from photo
+            Toast.makeText(this, "Loading ...", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
         }
